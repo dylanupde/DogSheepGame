@@ -17,9 +17,13 @@ class StateMachine:
 		self.__currentState = startState
 		self.__currentState.enter()
 
+
+
 	def getCurrentState(self):
 		""" Get the current state """
 		return self.__currentState
+
+
 
 	def update(self, gameState):
 		""" Run the update on the current state and determine if we should transition """
@@ -30,15 +34,24 @@ class StateMachine:
 		if nextState != None and type(nextState) != type(self.__currentState):
 			self.transitionTo(nextState)
 
+
+
 	def transitionTo(self, nextState):
 		""" Transition to the next state """
 		self.__currentState.exit()
 		self.__currentState = nextState
 		self.__currentState.enter()
 
+
+
 	def draw(self, screen):
 		""" Draw any debugging information associated with the states """
 		self.__currentState.draw(screen)
+
+
+
+
+
 
 class State:
 	def enter(self):
@@ -57,7 +70,8 @@ class State:
 		""" Draw any debugging info required by this state """
 		pass
 
-			   
+			
+	
 class FindSheepState(State):
 	""" This is an example state that simply picks the first sheep to target """
 
@@ -69,9 +83,10 @@ class FindSheepState(State):
 		# Pick a random sheep
 		dog.setTargetSheep(gameState.getHerd()[0])
 
-		# You could add some logic here to pick which state to go to next
-		# depending on the gameState
+		# You could add some logic here to pick which state to go to next depending on the gameState
 		return Idle()
+
+
 
 class Idle(State):
 	""" This is an idle state where the dog does nothing """
@@ -81,3 +96,6 @@ class Idle(State):
 		
 		# Do nothing
 		return Idle()
+
+#class FollowingPath(State):
+

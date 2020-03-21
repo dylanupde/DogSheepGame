@@ -60,8 +60,8 @@ class Dog(Agent):
 		""" Update the dog based on the gameState """
 
 		# Update the state machine
-		self.stateMachine.update(gameState)
 		self.graph = gameState.getGraph()
+		self.stateMachine.update(gameState)
 
 		# Select one of the searches based on user input
 		if pygame.key.get_pressed()[K_f]:

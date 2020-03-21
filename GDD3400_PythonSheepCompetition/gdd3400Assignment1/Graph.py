@@ -106,35 +106,130 @@ class Graph():
 			path[-1].isEnd = True
 		return path
 
-	def findPath_Breadth(self, start, end):
+	def findPath_Breadth(self, startNode, endNode):
 		""" Breadth Search """
+		print("BREADTH-FIRST")
 		self.reset()
+		
+		startNode.isStart = True
+		endNode.isEnd = True
 
-		# TODO: Put your code here
+		toVisit = [startNode]
+		startNode.isVisited = True
+
+		while len(toVisit) != 0:
+			#print("startNodes backnode is: ", startNode.backNode)
+			currentNode = toVisit[0]
+			toVisit.pop(0)
+			currentNode.isExplored = True
+
+			for nextNode in currentNode.neighbors:
+				if not nextNode.isVisited:
+					toVisit.append(nextNode)
+					nextNode.isVisited = True
+					nextNode.backNode = currentNode
+					if nextNode == endNode:
+						print("Found it!")
+						return self.buildPath(endNode)
 
 		return []
 
-	def findPath_Dijkstra(self, start, end):
+
+	def findPath_Dijkstra(self, startNode, endNode):
 		""" Dijkstra's Search """
+		print("DJIKSTRA")
 		self.reset()
+		return self.findPath_AStarOrDjikstra(startNode, endNode, False)
 
-		# TODO: Put your code here
 
-		return []
-
-	def findPath_AStar(self, start, end):
+	def findPath_AStar(self, startNode, endNode):
 		""" A Star Search """
+		print("A*")
+		self.reset()
+		return self.findPath_AStarOrDjikstra(startNode, endNode, True)
+
+
+	def findPath_BestFirst(self, startNode, endNode):
+		""" Best First Search """
+		print("BEST_FIRST")
 		self.reset()
 
-		# TODO: Put your code here
+		startNode.isStart = True
+		endNode.isEnd = True
+
+		toVisit = [startNode]
+		startNode.isVisited = True
+		startNode.cost = 0
+
+		while len(toVisit) != 0:
+			currentNode = toVisit[0]
+			toVisit.pop(0)
+			currentNode.isExplored = True
+
+			for nextNode in currentNode.neighbors:
+				nextNode.cost = (nextNode.center - endNode.center).Magnitude()
+
+				#print(currentDistance)
+				if nextNode.isVisited == False:
+					nextNode.isVisited = True
+					nextNode.backNode = currentNode
+
+					toVisit.append(nextNode)
+					toVisit = sorted(toVisit, key=lambda thisNode: thisNode.cost)
+					#print("PRINTING COST LIST!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+					#for thisNodeOk in toVisit:
+					#    print(thisNodeOk.cost)
+
+				if nextNode == endNode:
+					print("FOUND IT!!!!")
+					return self.buildPath(endNode)
 
 		return []
 
-	def findPath_BestFirst(self, start, end):
-		""" Best First Search """
-		#print("BEST_FIRST")
 
-		# TODO: Put your code here
+	def findPath_AStarOrDjikstra(self, startNode, endNode, actuallyDoingAStar):
+		""" Djikstra's Search """
+		self.reset()		
+		
+		startNode.isStart = True
+		endNode.isEnd = True
+
+		toVisit = [startNode]
+		startNode.isVisited = True
+		startNode.cost = 0
+
+		while len(toVisit) != 0:
+			currentNode = toVisit[0]
+			toVisit.pop(0)
+			currentNode.isExplored = True
+
+			for nextNode in currentNode.neighbors:
+				moveCost = (nextNode.center - currentNode.center).Magnitude()
+				totalCost = moveCost + currentNode.cost
+
+				if actuallyDoingAStar:
+					remainingDist = (nextNode.center - endNode.center).Magnitude()
+					totalCost += remainingDist
+
+				#print(currentDistance)
+				if nextNode.isVisited == False:
+					nextNode.isVisited = True
+					nextNode.backNode = currentNode
+					nextNode.cost = totalCost
+
+					toVisit.append(nextNode)
+					toVisit = sorted(toVisit, key=lambda thisNode: thisNode.cost)
+					#print("PRINTING COST LIST!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+					#for thisNodeOk in toVisit:
+					#    print(thisNodeOk.cost)
+				else:
+					if totalCost < nextNode.cost:
+						nextNode.cost = totalCost
+						nextNode.backNode = currentNode
+
+				if nextNode == endNode:
+					print("FOUND IT!!!!")
+					return self.buildPath(endNode)
 
 		return []
 
