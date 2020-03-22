@@ -125,20 +125,22 @@ class FindTarget(State):
 		myUltimateTargetLocation = None
 		dogsDistanceToSheepTargetLocation = (dog.center - sheepTargetLocation).length()
 		sheepsDistanceToSheepTargetLocation = (dog.targetSheep.center - sheepTargetLocation).length()
-		normalizedVectorFromSheepToDog = (dog.center - dog.targetSheep.center).normalize()
 		# If the dog is closer to the sheeps goal...
+		#if dogsDistanceToSheepTargetLocation < sheepsDistanceToSheepTargetLocation:
 		if dogsDistanceToSheepTargetLocation < sheepsDistanceToSheepTargetLocation:
+			normalizedVectorFromSheepToDog = (dog.center - dog.targetSheep.center).normalize()
 			vectorToAddToSheep = (Vector(-normalizedVectorFromSheepToDog.y, normalizedVectorFromSheepToDog.x)).scale(Constants.SHEEP_MIN_FLEE_DIST + 20)
 			dogTargetLocation1 = dog.targetSheep.center + vectorToAddToSheep
 			dogTargetLocation2 = dog.targetSheep.center - vectorToAddToSheep
-			distToTargetLocation1 = (dogTargetLocation1 - dog.center).length()
-			distToTargetLocation2 = (dogTargetLocation2 - dog.center).length()
-			if distToTargetLocation1 < distToTargetLocation2:
-				myUltimateTargetLocation = dogTargetLocation1
+			distFromSheepTargetLocationToTarget1 = (sheepTargetLocation - dogTargetLocation1).length()
+			distFromSheepTargetLocationToTarget2 = (sheepTargetLocation - dogTargetLocation2).length()
+			if distFromSheepTargetLocationToTarget1 < distFromSheepTargetLocationToTarget2:
+			    myUltimateTargetLocation = dogTargetLocation2
 			else:
-				myUltimateTargetLocation = dogTargetLocation2
+				myUltimateTargetLocation = dogTargetLocation1
 		else:
-			vectorToAddToSheep = normalizedVectorFromSheepToDog.scale(Constants.SHEEP_MIN_FLEE_DIST - 25)
+			vectorFromSheepToGoalNormalized = (sheepTargetLocation - dog.targetSheep.center).normalize()
+			vectorToAddToSheep = vectorFromSheepToGoalNormalized.scale(Constants.SHEEP_MIN_FLEE_DIST - 25)
 			myUltimateTargetLocation = dog.targetSheep.center - vectorToAddToSheep
 
 		# Make sure our ULTIMATE target location isn't out of bounds

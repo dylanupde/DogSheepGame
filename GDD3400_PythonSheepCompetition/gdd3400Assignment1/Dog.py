@@ -59,6 +59,13 @@ class Dog(Agent):
 	def update(self, gameState):
 		""" Update the dog based on the gameState """
 
+		if self.targetSheep != None:
+			print("My sheep is at:", self.targetSheep.center)
+			gameState.getGraph().getNodeFromPoint(self.targetSheep.center).isVisited = True
+		else:
+			print("I HAVE NO TARGET!!!!!!!!!")
+		
+
 		# Update the state machine
 		self.graph = gameState.getGraph()
 		self.stateMachine.update(gameState)

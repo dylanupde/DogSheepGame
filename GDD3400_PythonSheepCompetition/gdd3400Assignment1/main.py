@@ -184,7 +184,8 @@ while not hasQuit:
 			# If the sheep is also in the pen, remove the sheep
 			if sheep.boundingRect.colliderect(penBounds[1]):
 				herd.remove(sheep)
-			# If they're not longer colliding with the entrance, assume they have moved away from the entrance
+				dog.setTargetSheep(None)
+			# If they're no longer colliding with the entrance, assume they have moved away from the entrance
 			elif not sheep.boundingRect.colliderect(penBounds[0]):
 				atEntrance.remove(sheep)
 					   
