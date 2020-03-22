@@ -26,7 +26,7 @@ class Node():
 	def __str__(self):
 		""" String version the Node object """
 		value = "N(" + str(self.x) + ", " + str(self.y) + ", " + str(self.center) + ", " + str(self.isVisited) \
-				+ ": " + str(self.costFromStart) + ", " + str(self.costToEnd) + ", " + str(self.cost) + ")"
+				+ ": " + str(self.costFromStart) + ", " + str(self.costToEnd) + ", " + str(self.cost) + ") IsWalkable?" + str(self.isWalkable)
 		# If this node has a backnode, add it to the string representation
 		if (self.backNode is not 0):
 			value += " b: " + str(self.backNode.x) + ", " + str(self.backNode.y)

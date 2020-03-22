@@ -132,7 +132,6 @@ class Graph():
 					nextNode.isVisited = True
 					nextNode.backNode = currentNode
 					if nextNode == endNode:
-						print("Found it!")
 						return self.buildPath(endNode)
 
 		return []
@@ -187,7 +186,6 @@ class Graph():
 					#    print(thisNodeOk.cost)
 
 				if nextNode == endNode:
-					print("FOUND IT!!!!")
 					return self.buildPath(endNode)
 
 		return []
@@ -237,7 +235,6 @@ class Graph():
 						nextNode.backNode = currentNode
 
 				if nextNode == endNode:
-					print("FOUND IT!!!!")
 					return self.buildPath(endNode)
 
 		return []

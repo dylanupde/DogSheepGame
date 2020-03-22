@@ -50,6 +50,11 @@ class Dog(Agent):
 		elif self.searchType == SearchType.A_STAR:
 			self.path = self.graph.findPath_AStar(self.center, target)
 
+		# If we didn't find it, try djikstra's just in case
+		if len(self.path) == 0:
+			print("Couldn't find it with that algorithm! Trying djiktstra's instead.")
+			self.path = self.graph.findPath_Dijkstra(self.center, target)
+
 		# If the path exists, head toward the first node in the path
 		if len(self.path) > 0:
 			self.isFollowingPath = True
@@ -58,14 +63,7 @@ class Dog(Agent):
 
 	def update(self, gameState):
 		""" Update the dog based on the gameState """
-
-		if self.targetSheep != None:
-			print("My sheep is at:", self.targetSheep.center)
-			gameState.getGraph().getNodeFromPoint(self.targetSheep.center).isVisited = True
-		else:
-			print("I HAVE NO TARGET!!!!!!!!!")
 		
-
 		# Update the state machine
 		self.graph = gameState.getGraph()
 		self.stateMachine.update(gameState)

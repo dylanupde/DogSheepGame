@@ -64,7 +64,7 @@ class State:
 
 	def update(self, gameState):
 		""" Update this state, before leaving update, return the next state """
-		print("Updating " + self.__class__.__name__)
+		#print("Updating " + self.__class__.__name__)
 
 	def draw(self, screen):
 		""" Draw any debugging info required by this state """
@@ -119,8 +119,6 @@ class FindTarget(State):
 		if sheepTargetLocation == None:
 		    sheepTargetLocation = Constants.FENCE_GOAL_COORD
 
-		graph.getNodeFromPoint(sheepTargetLocation).isExplored = True
-
 		# Get the our potential targets to go to!
 		myUltimateTargetLocation = None
 		dogsDistanceToSheepTargetLocation = (dog.center - sheepTargetLocation).length()
@@ -140,23 +138,47 @@ class FindTarget(State):
 				myUltimateTargetLocation = dogTargetLocation1
 		else:
 			vectorFromSheepToGoalNormalized = (sheepTargetLocation - dog.targetSheep.center).normalize()
-			vectorToAddToSheep = vectorFromSheepToGoalNormalized.scale(Constants.SHEEP_MIN_FLEE_DIST - 25)
+			vectorToAddToSheep = vectorFromSheepToGoalNormalized.scale(Constants.SHEEP_MIN_FLEE_DIST - Constants.DOG_GO_AROUND_DIST)
 			myUltimateTargetLocation = dog.targetSheep.center - vectorToAddToSheep
 
 		# Make sure our ULTIMATE target location isn't out of bounds
-		if myUltimateTargetLocation.x < 1:
-			myUltimateTargetLocation.x = 1
-		elif myUltimateTargetLocation.x > Constants.WORLD_WIDTH:
-			myUltimateTargetLocation.x = Constants.WORLD_WIDTH - 2
-		if myUltimateTargetLocation.y < 1:
-			myUltimateTargetLocation.y = 1
-		elif myUltimateTargetLocation.y > Constants.WORLD_HEIGHT:
-			myUltimateTargetLocation.y = Constants.WORLD_HEIGHT - 2
+		myUltimateTargetLocation = self.ClampVectorWithinScreen(myUltimateTargetLocation)
+		
+		# If we're in an unwalkable spot, get all spots around it
+		while graph.getNodeFromPoint(myUltimateTargetLocation).isWalkable == False:
+			print("Unwalkable spot! Trying a nearby spot")
+			myUltimateTargetLocation.x = myUltimateTargetLocation.x + Constants.GRID_SIZE
+			myUltimateTargetLocation = self.ClampVectorWithinScreen(myUltimateTargetLocation)
+			if graph.getNodeFromPoint(myUltimateTargetLocation).isWalkable == False:
+				myUltimateTargetLocation.x = myUltimateTargetLocation.x - ( 2 * Constants.GRID_SIZE )
+				if graph.getNodeFromPoint(myUltimateTargetLocation).isWalkable == False:
+					myUltimateTargetLocation.x = myUltimateTargetLocation.x + Constants.GRID_SIZE
+					myUltimateTargetLocation.y = myUltimateTargetLocation.y + Constants.GRID_SIZE
+					if graph.getNodeFromPoint(myUltimateTargetLocation).isWalkable == False:
+					    myUltimateTargetLocation.y = myUltimateTargetLocation.y - ( 2 * Constants.GRID_SIZE )
+
 
 		dog.calculatePathToNewTarget(myUltimateTargetLocation)
 
-		# You could add some logic here to pick which state to go to next depending on the gameState
-		return FollowingPath()
+		# If there's no path, return this to try again next frame. Otherwise, move on to following the path!
+		if len(dog.path) > 0:
+		    return FollowingPath()
+		else:
+			print("Can't get to node at", graph.getNodeFromPoint(myUltimateTargetLocation))
+			return FindTarget()
+
+
+	def ClampVectorWithinScreen(self, inputVector):
+		vectorToOutput = inputVector
+		if vectorToOutput.x < 1:
+			vectorToOutput.x = 1
+		elif vectorToOutput.x > Constants.WORLD_WIDTH:
+			vectorToOutput.x = Constants.WORLD_WIDTH - 2
+		if vectorToOutput.y < 1:
+			vectorToOutput.y = 1
+		elif vectorToOutput.y > Constants.WORLD_HEIGHT:
+			vectorToOutput.y = Constants.WORLD_HEIGHT - 2
+		return vectorToOutput
 
 
 
