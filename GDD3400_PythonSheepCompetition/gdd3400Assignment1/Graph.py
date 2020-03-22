@@ -111,6 +111,9 @@ class Graph():
 		print("BREADTH-FIRST")
 		self.reset()
 		
+		startNode = self.getNodeFromPoint(startNode)
+		endNode = self.getNodeFromPoint(endNode)
+
 		startNode.isStart = True
 		endNode.isEnd = True
 
@@ -153,6 +156,9 @@ class Graph():
 		""" Best First Search """
 		print("BEST_FIRST")
 		self.reset()
+		
+		startNode = self.getNodeFromPoint(startNode)
+		endNode = self.getNodeFromPoint(endNode)
 
 		startNode.isStart = True
 		endNode.isEnd = True
@@ -167,7 +173,7 @@ class Graph():
 			currentNode.isExplored = True
 
 			for nextNode in currentNode.neighbors:
-				nextNode.cost = (nextNode.center - endNode.center).Magnitude()
+				nextNode.cost = (nextNode.center - endNode.center).length()
 
 				#print(currentDistance)
 				if nextNode.isVisited == False:
@@ -189,7 +195,10 @@ class Graph():
 
 	def findPath_AStarOrDjikstra(self, startNode, endNode, actuallyDoingAStar):
 		""" Djikstra's Search """
-		self.reset()		
+		self.reset()
+		
+		startNode = self.getNodeFromPoint(startNode)
+		endNode = self.getNodeFromPoint(endNode)
 		
 		startNode.isStart = True
 		endNode.isEnd = True
@@ -204,11 +213,11 @@ class Graph():
 			currentNode.isExplored = True
 
 			for nextNode in currentNode.neighbors:
-				moveCost = (nextNode.center - currentNode.center).Magnitude()
+				moveCost = (nextNode.center - currentNode.center).length()
 				totalCost = moveCost + currentNode.cost
 
 				if actuallyDoingAStar:
-					remainingDist = (nextNode.center - endNode.center).Magnitude()
+					remainingDist = (nextNode.center - endNode.center).length()
 					totalCost += remainingDist
 
 				#print(currentDistance)

@@ -137,6 +137,8 @@ while len(herd) < Constants.SHEEP_COUNT:
 
 # Setup the "winning" message and time
 font = pygame.font.SysFont('courier new', 32)
+#graph.getNodeFromPoint(Vector(520, 312)).isExplored = True;
+#graph.getNodeFromPoint(Vector(616, 472)).isExplored = True;
 
 # While the user has not selected quit
 gameState = GameState()
@@ -182,8 +184,7 @@ while not hasQuit:
 			# If the sheep is also in the pen, remove the sheep
 			if sheep.boundingRect.colliderect(penBounds[1]):
 				herd.remove(sheep)
-			# If they're not longer colliding with the entrance,
-			# assume they have moved away from the entrance
+			# If they're not longer colliding with the entrance, assume they have moved away from the entrance
 			elif not sheep.boundingRect.colliderect(penBounds[0]):
 				atEntrance.remove(sheep)
 					   
